@@ -49,23 +49,28 @@ class Article():
     def get_bunch_of_comments(self):
         return copy.deepcopy(self.bunch_of_comments)
 
+    # Регистрация подключения к базе данных
     def register_connector(self, connector):
         self.connector = connector
 
+    # Регистрация комментариев в статье
     def register_bunch_of_comments(self, bunch_of_comments):
         self.bunch_of_comments = bunch_of_comments
 
+    # Сохранение данных в базе
     def save_in_base(self):
         if self.connector is None:
             raise SyntaxError("bunch_of_comments or connector is empty")
         self.__id_number = self.connector.add_information(title=self.title, author=self.author, text=self.text,
                                                         date=self.date, bunch_of_comments=self.bunch_of_comments)
 
+    # Удаление данных из базы
     def delete_from_base(self):
         if self.__id_number == 0:
             raise SyntaxError("You can't delete the article which hasn't been added")
         self.connector.delete_information(self.__id_number)
 
+    # Получение статьи из базы со всеми комментариями
     def get_article_from_base(self, title):
         article_dict = self.connector.get_information(title)
         if len(article_dict) == 0:
@@ -88,19 +93,10 @@ class Article():
             else:
                 self.bunch_of_comments = None
 
-
-
+    # Обновить статью
     def update_base(self):
         if self.__id_number == 0:
             raise SyntaxError("You can't update the article which hasn't been added")
-        connector.update_information(article_id=self.__id_number, title=self.tite, text=self.text,
+        self.connector.update_information(article_id=self.__id_number, title=self.tite, text=self.text,
                                      author=self.author, bunch_of_comments=self.bunch_of_comments)
 
-
-if __name__ == '__main__':
-    connector = Connector.Connector() # "TypeError: 'module' object is not callable" error... why ?
-    article = Article(title='Hello Hello',
-                      text='This is text of hello hello',
-                      author='mememe',
-                      connector=connector)
-    article.save_in_base()

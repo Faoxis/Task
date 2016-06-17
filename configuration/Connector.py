@@ -4,6 +4,7 @@ from datetime import datetime
 
 
 class Connector:
+    ## -------------------- Конструктор класса Connector --------------------------##
     def __init__(self, filename='config.ini', section='mysql'):
         parser = ConfigParser()
         parser.read(filename)
@@ -16,6 +17,7 @@ class Connector:
         else:
             raise Exception('{0} not found in the {1}'.format(section, filename))
 
+    ## -------------------- Метод внесения информции в базу -----------------------##
     def add_information(self, title, text, author, date, bunch_of_comments=None):
         query_to_article = "INSERT INTO article(title, text, author, date) VALUES(%s, %s, %s, %s)"
         id_article = 0
@@ -54,6 +56,7 @@ class Connector:
                 conn.close()
         return id_article
 
+    ## -------------------- Метод удаления информции из базы -----------------------##
     def delete_information(self, article_id):
         # At first I wnat to do it for comments
         delete_query_for_comments = "DELETE FROM comment where article_id = %s"
@@ -99,6 +102,7 @@ class Connector:
             cursor.close()
             conn.close()
 
+    ## -------------------- Метод получения информции из базы -----------------------##
     def get_information(self, title):
         article_dict = dict()
         try:
@@ -121,12 +125,11 @@ class Connector:
             cursor.close()
             conn.close()
 
+    ## --------------------- Метод обновления информции в базе ------------------------##
     def update_information(self, article_id, title, text, author, date, bunch_of_comments=None):
         self.delete_information(article_id);
         new_id = self.add_information(title=title, text=text, author=author,
                                       date=date, bunch_of_comments=bunch_of_comments)
         return new_id
 
-if __name__ == '__main__':
-    connector = Connector()
-    connector.add_information(title="Title", text="Text", author="Author", date=datetime.now())
+
